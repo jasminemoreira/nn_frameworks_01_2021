@@ -19,6 +19,9 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
+use_cuda = t.cuda.is_available()
+device = t.device("cuda:0" if use_cuda else "cpu") 
+
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)),])
 
 mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
@@ -26,7 +29,6 @@ train_loader = t.utils.data.DataLoader(mnist_trainset, batch_size=10, shuffle=Tr
 
 mnist_testset = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 test_loader = t.utils.data.DataLoader(mnist_testset, batch_size=10, shuffle=True)
-
 
 """
 class Net(nn.Module):
@@ -46,34 +48,43 @@ class Net(nn.Module):
 net = Net()
 """
 
-
-net = nn.Sequential(nn.Linear(28*28, 100),
+net = nn.Sequential(nn.Linear(28*28, 16),
                       nn.ReLU(),
-                      nn.Linear(100, 50),
-                      nn.ReLU(),
-                      nn.Linear(50, 10)
+                      nn.Linear(16, 10)
                       )
+if use_cuda:
+    net.cuda()
 
 criterion = nn.CrossEntropyLoss()
-optimizer = t.optim.Adam(net.parameters(), lr=0.001) #e-1
+optimizer = t.optim.AdamW(net.parameters(), lr=0.01) #e-1
 epoch = 10
 
+loss_values = []
 for epoch in range(epoch):
-    net.train()
-
+    #net.train()
+    epoch_loss = 0
     for data in train_loader:
         x, y = data
         optimizer.zero_grad()
-        output = net(x.view(-1, 28*28))
-        loss = criterion(output, y)
+        output = net(x.view(-1, 28*28).to(device)).to(device)
+        loss = criterion(output, y.to(device))
         loss.backward()
         optimizer.step()
- 
-        
+        epoch_loss = epoch_loss+loss.item()       
+    loss_values.append(epoch_loss/len(train_loader))
+    
+plt.plot(range(1,epoch+2), loss_values, 'bo', label='Training Loss')
+plt.title("Training Loss")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+      
 with t.no_grad():
     for data in test_loader:      
         x, y = data
-        output = net(x.view(-1, 784))
+        output = net(x.view(-1, 784).to(device))
         correct = 0
         total = 0
         for idx, i in enumerate(output):
@@ -82,7 +93,9 @@ with t.no_grad():
             total +=1
 print(f'accuracy: {round(correct/total, 3)}')
 
+
+"""
 plt.imshow(x[3].view(28, 28))
 plt.show()
 print(t.argmax(net(x[3].view(-1, 784))[0]))
-
+"""
