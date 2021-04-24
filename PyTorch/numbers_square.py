@@ -40,8 +40,8 @@ if use_cuda:
 # Define the loss
 criterion = nn.L1Loss()
 # Optimizers require the parameters to optimize and a learning rate
-optimizer = optim.SGD(model.parameters(), lr=0.001)
-epochs =10000
+optimizer = optim.AdamW(model.parameters(), lr=0.001)
+epochs =5000
 
 start = time.time()
 
@@ -52,12 +52,12 @@ for e in range(epochs):
     loss.backward()
     optimizer.step()
     optimizer.zero_grad()   
-    if e%1000 == 0: loss_values.append(loss.item())
+    if e%(epochs/10) == 0: loss_values.append(loss.item())
  
 #writer.add_graph(model, v)
        
 print(f"Training loss: {loss.item()}")
-print(model(torch.tensor([5],dtype=torch.float).to(device)).item())
+print(model(torch.tensor([9],dtype=torch.float).to(device)).item())
 print(f'tempo: {time.time()-start}')
 
 
