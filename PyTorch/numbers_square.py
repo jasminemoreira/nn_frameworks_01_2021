@@ -18,15 +18,16 @@ import torch.nn as nn
 import torch.optim as optim
 import time 
 
+#from torch.utils.tensorboard import SummaryWriter
+#writer = SummaryWriter(r"C:\Users\jasmi\OneDrive\Área de Trabalho\Aprendizado PyTorch\runs")
 
-from torch.utils.tensorboard import SummaryWriter
-writer = SummaryWriter(r"C:\Users\jasmi\OneDrive\Área de Trabalho\Aprendizado PyTorch\runs")
-
-use_cuda = False #torch.cuda.is_available()
+use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu") 
 
 v = torch.tensor([[1],[2],[3],[4],[5],[6],[7],[8],[9],[10]],dtype=torch.float, requires_grad=True).to(device)
 l = torch.tensor([[1],[4],[9],[16],[25],[36],[49],[64],[81],[100]],dtype=torch.float).to(device)
+
+
 
 model = nn.Sequential(nn.Linear(1, 10),
                       nn.ReLU(),
@@ -42,17 +43,32 @@ criterion = nn.L1Loss()
 optimizer = optim.SGD(model.parameters(), lr=0.001)
 epochs =10000
 
-start = start = time.time()
+start = time.time()
 
+loss_values = []
 for e in range(epochs):  
     output = model(v)
     loss = criterion(output,l)
     loss.backward()
     optimizer.step()
     optimizer.zero_grad()   
+    if e%1000 == 0: loss_values.append(loss.item())
  
-writer.add_graph(model, v)
+#writer.add_graph(model, v)
        
 print(f"Training loss: {loss.item()}")
 print(model(torch.tensor([5],dtype=torch.float).to(device)).item())
 print(f'tempo: {time.time()-start}')
+
+
+import matplotlib.pyplot as plt
+plt.plot(range(1,11), loss_values, 'bo', label='Training Loss')
+plt.title("Training Loss")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+
+
+
