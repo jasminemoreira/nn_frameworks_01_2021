@@ -13,15 +13,9 @@ Criado em Wed Mar 31 16:00:00 2021
    - backward pass: calcular os gradientes
    - update weights: ajuste dos pesos do modelo
 """
-import tensorflow as tf
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
-
 from keras import models, layers
 from keras.datasets import mnist
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 train_images.shape
