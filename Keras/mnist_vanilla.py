@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Criado em Wed Mar 31 16:00:00 2021
-
 @author: Jasmine Moreira
-
 1) Preparar dados
 2) Criar o modelo (input, output size, forward pass)
 3) Criar a função de erro (loss) e o otimizador 
@@ -13,9 +10,10 @@ Criado em Wed Mar 31 16:00:00 2021
    - backward pass: calcular os gradientes
    - update weights: ajuste dos pesos do modelo
 """
-from keras import models, layers
-from keras.datasets import mnist
+from tensorflow.keras import models, layers
+from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras import optimizers
 
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 train_images.shape
@@ -31,9 +29,13 @@ test_labels = to_categorical(test_labels)
 
 
 network = models.Sequential()
-network.add(layers.Dense(512,activation='relu', input_shape=(28 * 28,)))
+network.add(layers.Dense(50,activation='relu', input_shape=(28 * 28,)))
 network.add(layers.Dense(10, activation='softmax'))
-network.compile(optimizer='rmsprop',loss='categorical_crossentropy', metrics=['accuracy'])
+
+opt = optimizers.Adamax(learning_rate=0.01)
+network.compile(optimizer=opt,
+                loss='categorical_crossentropy', 
+                metrics=['accuracy'])
 
 history = network.fit(train_images, 
                       train_labels, 
