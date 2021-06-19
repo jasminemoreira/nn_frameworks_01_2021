@@ -1,8 +1,10 @@
 Trabalho Final:
 
 - Otimizar o modelo cats and dogs para conseguir a máxima acurácia possível (vale qualquer método)
+  (precisa ser feito no python pq o orange não possui redes convolutivas)
 
 - Criar e validar modelos para os seguintes datasets:
+  (verificar se outras ferramentas possuem maior acurácia, entregar prints de tela orange e python )
 
 https://www.kaggle.com/hesh97/titanicdataset-traincsv
 
