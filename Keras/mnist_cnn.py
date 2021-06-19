@@ -3,8 +3,20 @@
 """
 Created on Tue Jun 26 09:00:18 2018
 @author: jasmine
+
+1) Preparar dados
+2) Criar o modelo (input, output size, forward pass)
+3) Criar a função de erro (loss) e o otimizador 
+4) Criar o loop de treinamento
+   - forward pass: calcular a predição e o erro
+   - backward pass: calcular os gradientes
+   - update weights: ajuste dos pesos do modelo
 """
-from keras.datasets import mnist
+
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras import models, layers
+
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 train_images.shape
 len(train_labels)
@@ -15,12 +27,9 @@ train_images = train_images.astype('float32')/255
 test_images = test_images.reshape((10000, 28, 28,1))
 test_images = test_images.astype('float32')/255
 
-from keras.utils import to_categorical
 train_labels = to_categorical(train_labels)
 test_labels = to_categorical(test_labels)
 
-
-from keras import models, layers
 
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3,3),activation='relu', input_shape=(28,28,1)))
@@ -60,7 +69,6 @@ plt.xlabel("Epochs")
 plt.ylabel("Loss")
 plt.legend()
 plt.show()
-
 
 acc_values = history_dict['accuracy']
 val_acc_values = history_dict['val_accuracy']
