@@ -1,1 +1,13 @@
-# nn_frameworks_01_2021
+Trabalho Final:
+
+- Otimizar o modelo cats and dogs para conseguir a máxima acurácia possível (vale qualquer método)
+
+- Criar e validar modelos para os seguintes datasets:
+
+https://www.kaggle.com/hesh97/titanicdataset-traincsv
+
+https://www.kaggle.com/andrewmvd/heart-failure-clinical-data?select=heart_failure_clinical_records_dataset.csv
+
+https://www.kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
+
+https://www.kaggle.com/primaryobjects/voicegender
